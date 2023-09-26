@@ -31,6 +31,8 @@ extern "C" {
 typedef void
 (*MemoryExceptionHandler) (void* parameter);
 
+PAL_API void memory_pool_iec61850_init(void);
+
 PAL_API void
 Memory_installExceptionHandler(MemoryExceptionHandler handler, void* parameter);
 

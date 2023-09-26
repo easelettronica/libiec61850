@@ -30,7 +30,7 @@
 #include "mms_goose.h"
 #include "mms_sv.h"
 #include "reporting.h"
-#include "logging.h"
+#include "iec61850_logging.h"
 #include "control.h"
 #include "ied_server_private.h"
 

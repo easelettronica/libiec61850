@@ -551,7 +551,7 @@ IedServer_stop(IedServer self);
  * \param tcpPort the TCP port the server is listening (-1 for using the default MMS or secure MMS port)
  */
 LIB61850_API void
-IedServer_startThreadless(IedServer self, int tcpPort);
+IedServer_startThreadless(IedServer self, int sock, int tcpPort);
 
 /**
  * \brief Wait until a server connection is ready (with timeout)
@@ -570,6 +570,15 @@ LIB61850_API int
 IedServer_waitReady(IedServer self, unsigned int timeoutMs);
 
 /**
+ * Install a new connection accepeted from application layer.
+ *
+ * @param self the IedServer instance
+ * @param sock socket ID
+ */
+LIB61850_API void
+IedServer_installNewConnectionAsync(IedServer self, int sock);
+
+/**
  * \brief handle incoming TCP data in non-threaded mode
  *
  * The function should be called periodically. If the function is called more often
@@ -580,6 +589,18 @@ IedServer_waitReady(IedServer self, unsigned int timeoutMs);
  */
 LIB61850_API void
 IedServer_processIncomingData(IedServer self);
+
+/**
+ * \brief handle incoming TCP data in non-threaded mode
+ *
+ * The function should be called periodically. If the function is called more often
+ * the response time for incoming messages will be faster. As an alternative the
+ * function may only be called if new TCP data is available.
+ *
+ * \param self the instance of IedServer to operate on.
+ */
+LIB61850_API void
+IedServer_processIncomingDataAsync(IedServer self);
 
 /**
  * \brief perform periodic background tasks in non-threaded mode

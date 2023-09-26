@@ -651,7 +651,7 @@ MmsServer_stopListening(MmsServer self)
 #endif /* (CONFIG_MMS_THREADLESS_STACK != 1) && (CONFIG_MMS_SINGLE_THREADED != 1)*/
 
 void
-MmsServer_startListeningThreadless(MmsServer self, int tcpPort)
+MmsServer_startListeningThreadless(MmsServer self, int sock, int tcpPort)
 {
     if (self->isoServerList) {
 
@@ -669,7 +669,7 @@ MmsServer_startListeningThreadless(MmsServer self, int tcpPort)
             if (tcpPort != -1)
                 IsoServer_setTcpPort(isoServer, tcpPort);
 
-            IsoServer_startListeningThreadless(isoServer);
+            IsoServer_startListeningThreadless(isoServer, sock);
 
             elem = LinkedList_getNext(elem);
         }
@@ -710,6 +710,24 @@ MmsServer_waitReady(MmsServer self, unsigned int timeoutMs)
 }
 
 void
+MmsServer_installNewConnectionAsync(MmsServer self, int sock)
+{
+  if (self->isoServerList) {
+      LinkedList elem = LinkedList_getNext(self->isoServerList);
+
+      while (elem) {
+          IsoServer isoServer = (IsoServer) LinkedList_getData(elem);
+
+          if (IsoServer_getState(isoServer) == ISO_SVR_STATE_RUNNING) {
+            IsoServer_installNewConnectionAsync(isoServer, sock);
+          }
+
+          elem = LinkedList_getNext(elem);
+      }
+  }
+}
+
+void
 MmsServer_handleIncomingMessages(MmsServer self)
 {
     if (self->isoServerList) {
@@ -719,6 +737,22 @@ MmsServer_handleIncomingMessages(MmsServer self)
             IsoServer isoServer = (IsoServer) LinkedList_getData(elem);
 
             IsoServer_processIncomingMessages(isoServer);
+
+            elem = LinkedList_getNext(elem);
+        }
+    }
+}
+
+void
+MmsServer_handleIncomingMessagesAsync(MmsServer self)
+{
+    if (self->isoServerList) {
+        LinkedList elem = LinkedList_getNext(self->isoServerList);
+
+        while (elem) {
+            IsoServer isoServer = (IsoServer) LinkedList_getData(elem);
+
+            IsoServer_processIncomingMessagesAsync(isoServer);
 
             elem = LinkedList_getNext(elem);
         }

@@ -415,11 +415,11 @@ handleClientConnections(IsoServer self)
 }
 
 static bool
-setupIsoServer(IsoServer self)
+setupIsoServer(IsoServer self, int sock)
 {
     bool success = true;
 
-    self->serverSocket = (Socket) TcpServerSocket_create(self->localIpAddress, self->tcpPort);
+    self->serverSocket = (Socket)TcpServerSocket_create(self->localIpAddress, sock, self->tcpPort);
 
     if (self->serverSocket == NULL) {
         setState(self, ISO_SVR_STATE_ERROR);
@@ -525,6 +525,17 @@ handleIsoConnections(IsoServer self, bool isSingleThread)
 
     if (isSingleThread)
         handleClientConnections(self);
+}
+
+/** used by single and multi-threaded versions
+ *
+ * \param isSingleThread when true server is running in single thread or non-thread mode
+ */
+static void
+handleIsoConnectionsThreadlessAsync(IsoServer self)
+{
+   callTickHandlerForClientConnections(self);
+   handleClientConnections(self);
 }
 
 #if (CONFIG_MMS_SINGLE_THREADED == 0) && (CONFIG_MMS_THREADLESS_STACK == 0)
@@ -693,9 +704,9 @@ exit_function:
 #endif /* (CONFIG_MMS_THREADLESS_STACK != 1) && (CONFIG_MMS_SINGLE_THREADED != 1) */
 
 void
-IsoServer_startListeningThreadless(IsoServer self)
+IsoServer_startListeningThreadless(IsoServer self, int sock)
 {
-    if (!setupIsoServer(self)) {
+    if (!setupIsoServer(self, sock)) {
         if (DEBUG_ISO_SERVER)
             printf("ISO_SERVER: starting server failed!\n");
 
@@ -729,11 +740,44 @@ IsoServer_waitReady(IsoServer self, unsigned int timeoutMs)
    return result;
 }
 
+int
+IsoServer_installNewConnectionAsync(IsoServer self, int sock)
+{
+  Socket conSocket;
+
+  conSocket = ServerSocket_install((ServerSocket)self->serverSocket, sock);
+
+  IsoConnection isoConnection = IsoConnection_create(conSocket, self, true);
+
+  if (isoConnection) {
+      addClientConnection(self, isoConnection);
+
+      IsoConnection_addToHandleSet(isoConnection, self->handleset);
+
+      self->connectionHandler(ISO_CONNECTION_OPENED, self->connectionHandlerParameter,
+              isoConnection);
+
+      IsoConnection_start(isoConnection);
+  }
+  else {
+      Socket_destroy(conSocket);
+  }
+
+  return 0;
+}
+
 void
 IsoServer_processIncomingMessages(IsoServer self)
 {
     if (getState(self) == ISO_SVR_STATE_RUNNING)
         handleIsoConnections(self, true);
+}
+
+void
+IsoServer_processIncomingMessagesAsync(IsoServer self)
+{
+    if (getState(self) == ISO_SVR_STATE_RUNNING)
+      handleIsoConnectionsThreadlessAsync(self);
 }
 
 int

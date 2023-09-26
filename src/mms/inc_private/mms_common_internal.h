@@ -34,6 +34,8 @@
 #define DEFAULT_MAX_SERV_OUTSTANDING_CALLED 5
 #define DEFAULT_DATA_STRUCTURE_NESTING_LEVEL 10
 
+typedef struct sMmsOutstandingCall* MmsOutstandingCall;
+
 #if (MMS_FILE_SERVICE == 1)
 
 #ifndef CONFIG_MMS_MAX_NUMBER_OF_OPEN_FILES_PER_CONNECTION
@@ -41,8 +43,6 @@
 #endif
 
 #include "hal_filesystem.h"
-
-typedef struct sMmsOutstandingCall* MmsOutstandingCall;
 
 typedef struct {
         int32_t frsmId;

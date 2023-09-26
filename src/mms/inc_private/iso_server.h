@@ -139,11 +139,14 @@ LIB61850_INTERNAL void
 IsoServer_stopListening(IsoServer self);
 
 LIB61850_INTERNAL void
-IsoServer_startListeningThreadless(IsoServer self);
+IsoServer_startListeningThreadless(IsoServer self, int sock);
 
 /**
  * for non-threaded operation
  */
+LIB61850_INTERNAL void
+IsoServer_processIncomingMessagesAsync(IsoServer self);
+
 LIB61850_INTERNAL void
 IsoServer_processIncomingMessages(IsoServer self);
 
@@ -152,6 +155,9 @@ IsoServer_getConnectionCounter(IsoServer self);
 
 LIB61850_INTERNAL int
 IsoServer_waitReady(IsoServer self, unsigned int timeoutMs);
+
+LIB61850_INTERNAL int
+IsoServer_installNewConnectionAsync(IsoServer self, int sock);
 
 LIB61850_INTERNAL void
 IsoServer_stopListeningThreadless(IsoServer self);

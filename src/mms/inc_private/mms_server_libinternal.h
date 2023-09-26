@@ -144,7 +144,7 @@ MmsServer_stopListening(MmsServer self);
  * \param tcpPort the TCP port the server is listening on.
  */
 LIB61850_INTERNAL void
-MmsServer_startListeningThreadless(MmsServer self, int tcpPort);
+MmsServer_startListeningThreadless(MmsServer self, int sock, int tcpPort);
 
 /**
  * \brief Wait for the server to come ready in non-threaded operation mode
@@ -157,6 +157,15 @@ LIB61850_INTERNAL int
 MmsServer_waitReady(MmsServer self, unsigned int timeoutMs);
 
 /**
+ * \brief Install a new connection accepted from application layer
+ *
+ * @param self the MmsServer instance to operate on
+ * @param sock the new socket ID accepted
+ */
+LIB61850_INTERNAL void
+MmsServer_installNewConnectionAsync(MmsServer self, int sock);
+
+/**
  * \brief Handle client connections (for non-threaded operation mode)
  *
  * This function is listening for new client connections and handles incoming
@@ -166,6 +175,17 @@ MmsServer_waitReady(MmsServer self, unsigned int timeoutMs);
  */
 LIB61850_INTERNAL void
 MmsServer_handleIncomingMessages(MmsServer self);
+
+/**
+ * \brief Handle client connections (for non-threaded operation mode)
+ *
+ * This function is listening for new client connections and handles incoming
+ * requests for existing client connections.
+ *
+ * \param self the MmsServer instance to operate on
+ */
+LIB61850_INTERNAL void
+MmsServer_handleIncomingMessagesAsync(MmsServer self);
 
 /**
  * \brief Handle MmsServer background task

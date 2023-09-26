@@ -24,7 +24,7 @@
 #include "libiec61850_platform_includes.h"
 #include "stack_config.h"
 #include "mms_mapping.h"
-#include "logging.h"
+#include "iec61850_logging.h"
 #include "linked_list.h"
 #include "hal_thread.h"
 

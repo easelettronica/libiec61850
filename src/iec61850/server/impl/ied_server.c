@@ -769,10 +769,10 @@ IedServer_setLocalIpAddress(IedServer self, const char* localIpAddress)
 
 
 void
-IedServer_startThreadless(IedServer self, int tcpPort)
+IedServer_startThreadless(IedServer self, int sock, int tcpPort)
 {
     if (self->running == false) {
-        MmsServer_startListeningThreadless(self->mmsServer, tcpPort);
+        MmsServer_startListeningThreadless(self->mmsServer, sock, tcpPort);
         self->running = true;
     }
 }
@@ -790,9 +790,21 @@ IedServer_waitReady(IedServer self, unsigned int timeoutMs)
 }
 
 void
+IedServer_installNewConnectionAsync(IedServer self, int sock)
+{
+  MmsServer_installNewConnectionAsync(self->mmsServer, sock);
+}
+
+void
 IedServer_processIncomingData(IedServer self)
 {
     MmsServer_handleIncomingMessages(self->mmsServer);
+}
+
+void
+IedServer_processIncomingDataAsync(IedServer self)
+{
+    MmsServer_handleIncomingMessagesAsync(self->mmsServer);
 }
 
 bool

@@ -126,7 +126,7 @@ Handleset_destroy(HandleSet self);
  * \return the newly create TcpServerSocket instance
  */
 PAL_API ServerSocket
-TcpServerSocket_create(const char* address, int port);
+TcpServerSocket_create(const char* address, int sock, int port);
 
 PAL_API UdpSocket
 UdpSocket_create(void);
@@ -171,6 +171,23 @@ ServerSocket_listen(ServerSocket self);
  */
 PAL_API Socket
 ServerSocket_accept(ServerSocket self);
+
+/**
+ * \brief accept a new incoming connection (non-blocking)
+ *
+ * This function shall accept a new incoming connection. It is non-blocking and has to
+ * return NULL if no new connection is pending.
+ *
+ * Implementation of this function is MANDATORY if server functionality is required.
+ *
+ * NOTE: The behaviour of this function changed with version 0.8!
+ *
+ * \param self server socket instance
+ *
+ * \return handle of the new connection socket or NULL if no new connection is available
+ */
+PAL_API Socket
+ServerSocket_install(ServerSocket self, int sock);
 
 /**
  * \brief active TCP keep alive for socket and set keep alive parameters
