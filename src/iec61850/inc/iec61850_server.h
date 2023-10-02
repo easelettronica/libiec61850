@@ -576,7 +576,16 @@ IedServer_waitReady(IedServer self, unsigned int timeoutMs);
  * @param sock socket ID
  */
 LIB61850_API void
-IedServer_installNewConnectionAsync(IedServer self, int sock);
+IedServer_installNewConnectionAsync(IedServer self, int sock, void * const context);
+
+/**
+ * Remove a connection accepeted from application layer.
+ *
+ * @param self the IedServer instance
+ * @param sock socket ID
+ */
+LIB61850_API void
+IedServer_removeConnectionAsync(IedServer self, int sock, void * const context);
 
 /**
  * \brief handle incoming TCP data in non-threaded mode

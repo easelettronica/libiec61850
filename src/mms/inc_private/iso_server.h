@@ -157,13 +157,16 @@ LIB61850_INTERNAL int
 IsoServer_waitReady(IsoServer self, unsigned int timeoutMs);
 
 LIB61850_INTERNAL int
-IsoServer_installNewConnectionAsync(IsoServer self, int sock);
+IsoServer_installNewConnectionAsync(IsoServer self, int sock, void * const context);
 
 LIB61850_INTERNAL void
 IsoServer_stopListeningThreadless(IsoServer self);
 
 LIB61850_INTERNAL void
 IsoServer_closeConnection(IsoServer self, IsoConnection isoConnection);
+
+LIB61850_INTERNAL void
+IsoServer_closeConnectionAsync(IsoServer self, int sock, void * const context);
 
 LIB61850_INTERNAL void
 IsoServer_destroy(IsoServer self);

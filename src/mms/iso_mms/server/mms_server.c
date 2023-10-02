@@ -710,7 +710,7 @@ MmsServer_waitReady(MmsServer self, unsigned int timeoutMs)
 }
 
 void
-MmsServer_installNewConnectionAsync(MmsServer self, int sock)
+MmsServer_installNewConnectionAsync(MmsServer self, int sock, void * const context)
 {
   if (self->isoServerList) {
       LinkedList elem = LinkedList_getNext(self->isoServerList);
@@ -719,7 +719,25 @@ MmsServer_installNewConnectionAsync(MmsServer self, int sock)
           IsoServer isoServer = (IsoServer) LinkedList_getData(elem);
 
           if (IsoServer_getState(isoServer) == ISO_SVR_STATE_RUNNING) {
-            IsoServer_installNewConnectionAsync(isoServer, sock);
+            IsoServer_installNewConnectionAsync(isoServer, sock, context);
+          }
+
+          elem = LinkedList_getNext(elem);
+      }
+  }
+}
+
+void
+MmsServer_removeConnectionAsync(MmsServer self, int sock, void * const context)
+{
+  if (self->isoServerList) {
+      LinkedList elem = LinkedList_getNext(self->isoServerList);
+
+      while (elem) {
+          IsoServer isoServer = (IsoServer) LinkedList_getData(elem);
+
+          if (IsoServer_getState(isoServer) == ISO_SVR_STATE_RUNNING) {
+            IsoServer_closeConnectionAsync(isoServer, sock, context);
           }
 
           elem = LinkedList_getNext(elem);

@@ -790,9 +790,15 @@ IedServer_waitReady(IedServer self, unsigned int timeoutMs)
 }
 
 void
-IedServer_installNewConnectionAsync(IedServer self, int sock)
+IedServer_installNewConnectionAsync(IedServer self, int sock, void * const context)
 {
-  MmsServer_installNewConnectionAsync(self->mmsServer, sock);
+  MmsServer_installNewConnectionAsync(self->mmsServer, sock, context);
+}
+
+void
+IedServer_removeConnectionAsync(IedServer self, int sock, void * const context)
+{
+  MmsServer_removeConnectionAsync(self->mmsServer, sock, context);
 }
 
 void

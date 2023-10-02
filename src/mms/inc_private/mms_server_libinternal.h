@@ -163,7 +163,16 @@ MmsServer_waitReady(MmsServer self, unsigned int timeoutMs);
  * @param sock the new socket ID accepted
  */
 LIB61850_INTERNAL void
-MmsServer_installNewConnectionAsync(MmsServer self, int sock);
+MmsServer_installNewConnectionAsync(MmsServer self, int sock, void * const context);
+
+/**
+ * \brief Remove a connection accepted from application layer
+ *
+ * @param self the MmsServer instance to operate on
+ * @param sock the new socket ID accepted
+ */
+LIB61850_INTERNAL void
+MmsServer_removeConnectionAsync(MmsServer self, int sock, void * const context);
 
 /**
  * \brief Handle client connections (for non-threaded operation mode)

@@ -187,7 +187,7 @@ ServerSocket_accept(ServerSocket self);
  * \return handle of the new connection socket or NULL if no new connection is available
  */
 PAL_API Socket
-ServerSocket_install(ServerSocket self, int sock);
+ServerSocket_install(ServerSocket self, int sock, void * const context);
 
 /**
  * \brief active TCP keep alive for socket and set keep alive parameters
@@ -363,6 +363,18 @@ Socket_getPeerAddressStatic(Socket self, char* peerAddressString);
  */
 PAL_API void
 Socket_destroy(Socket self);
+
+/**
+ * \brief return the socket ID
+ *
+ * This function shall return the ID (fd).
+ *
+ * Implementation of this function is MANDATORY
+ *
+ * \param self the client, connection or server socket instance
+ */
+PAL_API int
+Socket_getID(Socket self);
 
 /*! @} */
 

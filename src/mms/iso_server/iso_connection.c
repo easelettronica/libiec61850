@@ -743,3 +743,9 @@ IsoConnection_isRunning(IsoConnection self)
     else
         return false;
 }
+
+int
+IsoConnection_getSockId(IsoConnection self)
+{
+  return Socket_getID(self->socket);
+}

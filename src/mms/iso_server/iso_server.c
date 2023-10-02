@@ -741,11 +741,11 @@ IsoServer_waitReady(IsoServer self, unsigned int timeoutMs)
 }
 
 int
-IsoServer_installNewConnectionAsync(IsoServer self, int sock)
+IsoServer_installNewConnectionAsync(IsoServer self, int sock, void * const context)
 {
   Socket conSocket;
 
-  conSocket = ServerSocket_install((ServerSocket)self->serverSocket, sock);
+  conSocket = ServerSocket_install((ServerSocket)self->serverSocket, sock, context);
 
   IsoConnection isoConnection = IsoConnection_create(conSocket, self, true);
 
@@ -850,6 +850,39 @@ IsoServer_closeConnection(IsoServer self, IsoConnection isoConnection)
         self->connectionHandler(ISO_CONNECTION_CLOSED, self->connectionHandlerParameter,
                 isoConnection);
     }
+}
+
+void
+IsoServer_closeConnectionAsync(IsoServer self, int sock, void * const context)
+{
+  int32_t i;
+
+  /*
+   * Find connection base on sock ID
+   */
+  if (getState(self) != ISO_SVR_STATE_IDLE) {
+    for (i = 0; i < CONFIG_MAXIMUM_TCP_CLIENT_CONNECTIONS; i++) {
+      if (self->openClientConnections[i] != NULL) {
+        if (IsoConnection_getSockId(self->openClientConnections[i]) == sock) {
+
+          self->connectionHandler(ISO_CONNECTION_CLOSED, self->connectionHandlerParameter,
+                                  self->openClientConnections[i]);
+
+          IsoConnection_close(self->openClientConnections[i]);
+
+          IsoConnection_removeFromHandleSet(self->openClientConnections[i], self->handleset);
+
+          if (IsoConnection_getState(self->openClientConnections[i]) == ISO_CON_STATE_TERMINATED) {
+              IsoConnection_removeFromHandleSet(self->openClientConnections[i], self->handleset);
+              IsoConnection_destroy(self->openClientConnections[i]);
+          }
+
+          self->openClientConnections[i] = NULL;
+          break;
+        }
+      }
+    }
+  }
 }
 
 void

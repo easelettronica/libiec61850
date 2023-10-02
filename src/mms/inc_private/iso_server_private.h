@@ -73,4 +73,7 @@ private_IsoServer_getConnectionCounter(IsoServer self);
 LIB61850_INTERNAL bool
 IsoConnection_isRunning(IsoConnection self);
 
+LIB61850_INTERNAL int
+IsoConnection_getSockId(IsoConnection self);
+
 #endif /* ISO_SERVER_PRIVATE_H_ */
