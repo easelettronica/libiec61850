@@ -856,6 +856,12 @@ MmsServerConnection_getSecurityToken(MmsServerConnection self)
     return IsoConnection_getSecurityToken(self->isoConnection);
 }
 
+int
+MmsServerConnection_getSocketID(MmsServerConnection self)
+{
+    return IsoConnection_getSockId(self->isoConnection);
+}
+
 #if (MMS_DYNAMIC_DATA_SETS == 1)
 LinkedList
 MmsServerConnection_getNamedVariableLists(MmsServerConnection self)

@@ -370,6 +370,9 @@ MmsServerConnection_getLocalAddress(MmsServerConnection self);
 LIB61850_INTERNAL void*
 MmsServerConnection_getSecurityToken(MmsServerConnection self);
 
+LIB61850_INTERNAL int
+MmsServerConnection_getSocketID(MmsServerConnection self);
+
 /**@}*/
 
 #ifdef __cplusplus

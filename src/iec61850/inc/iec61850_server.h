@@ -824,6 +824,18 @@ LIB61850_API void*
 ClientConnection_getSecurityToken(ClientConnection self);
 
 /**
+ * \brief Get the socket ID associated with this connection
+ *
+ * The socket ID is an socket handle that is associated with the connection.
+ *
+ * \param self the ClientConnection instance
+ *
+ * \return the socket ID or NULL
+ */
+LIB61850_API int
+ClientConnection_getSocketID(ClientConnection self);
+
+/**
  * \brief User provided callback function that is invoked whenever a new client connects or an existing connection is closed
  *        or detected as lost.
  *

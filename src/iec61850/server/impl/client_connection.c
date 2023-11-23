@@ -148,3 +148,11 @@ ClientConnection_getSecurityToken(ClientConnection self)
 
     return MmsServerConnection_getSecurityToken(mmsConnection);
 }
+
+LIB61850_API int
+ClientConnection_getSocketID(ClientConnection self)
+{
+    MmsServerConnection mmsConnection = (MmsServerConnection) self->serverConnectionHandle;
+
+    return MmsServerConnection_getSocketID(mmsConnection);
+}
